@@ -1,5 +1,4 @@
 body {
-    background-color: antiquewhite;
     width: 1920px;
     height: 1080px;
 }
@@ -7,13 +6,13 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%; /* or a specific height */
+    height: 100%;
 }
 
 img {
-    max-width: 100%; /* ensures the image scales down if needed */
+    max-width: 100%; 
     height: auto;
-    animation: breathe 3s infinite; /* Apply the animation */
+    animation: breathe 3s infinite;
 }
 
 @keyframes breathe {
