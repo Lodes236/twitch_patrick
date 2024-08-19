@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .overlay{
+            width: 1920px;
+            height: 1080px;
+        } 
+
+        .blue-comic {
+        }
+
+        .element-frame-top,
+        .element-frame-bottom {
+            /*width: 100%;*/
+        }
+
+        .element-frame-left,
+        .element-frame-right {
+            height: 100%;
+        }
+
+        .element-frame-top {
+            height: 50px;
+            background-color: red;
+            display: flex;
+            align-items: end;
+            justify-content: center;
+        }
+
+        .element-frame-top-border,
+        .element-frame-bottom-border {
+            height: 20%;
+            background-color: black;
+            width: calc(100% - 100px);
+        }
+
+        .element-frame-left-border,
+        .element-frame-right-border {
+            width: 20%;
+            background-color: black;
+            height: calc(100% - 80px);
+        }
+
+        .element-frame-left {
+            width: 50px;
+            background-color: red;
+            position: absolute;
+            display: flex;
+            justify-content: end;
+            align-items: center;
+            z-index: 15;
+            top: 0;
+        }
+
+        .element-frame-bottom {
+            height: 50px;
+            background-color: red;
+            display: flex;
+            justify-content: center;
+            margin-top: calc(1080px - 100px);
+        }
+
+        .element-frame-right {
+            width: 50px;
+            background-color: red;
+            position: absolute;
+            z-index: 15;
+            top: 0;
+            right: 0;
+            display: flex;
+            justify-content: start;
+            align-items: center;
+        }
+
+        .element-frame {
+            height: 100%;
+            width: 100%;
+            position: relative;
+        }
+
+        .animated-background-wrap {
+            overflow: hidden;
+        }
+        
+        .sliding-background {
+            background: url("small.png") repeat-x;
+            height: 1087px;
+            width: 1923px;
+            animation: slide 20s linear infinite;
+        }
+        
+        @keyframes slide{
+            0% {
+            transform: translate3d(0, 0, 0);
+            }
+            100% {
+            transform: translate3d(-1923px, 0, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="sliding-background"></div>
+      </div>
+    <div class="overlay blue-comic animated-background-wrap">
+        <div class="element-frame">
+            <div class="element-frame-top">
+                <div class="element-frame-top-border"></div>
+            </div>
+            <div class="element-frame-left">
+                <div class="element-frame-left-border"></div>
+            </div>
+            <div class="element-frame-bottom">
+                <div class="element-frame-bottom-border"></div>
+            </div>
+            <div class="element-frame-right">
+                <div class="element-frame-right-border"></div>
+            </div>
+        </div>
+
+        <div class="element-webcam">
+            <div class="element-webcam-frame">
+
+            </div>
+        </div>
+
+        <div class="element-chat">
+            <div class="element-chat-frame">
+                <div class="element-chat-frame-top"> </div>
+                <div class="element-chat-frame-right"> </div>
+                <div class="element-chat-frame-bottom"> </div>
+                <div class="element-chat-frame-left"> </div>
+            </div>
+        </div>
+        <div class="element-toparea" style="width: 1400px; height: 200px; position: fixed; top: 50px; left: 50px;">
+            <div class="element-toparea-frame" style="position: relative; height: 100%; width: 100%; z-index: 10;">
+                <div class="element-toparea-frame-bottom" style="position: absolute; bottom: 0; width: 100%; height: 50px; background-color: red; display: flex; flex-wrap: wrap; align-content: space-between;">
+                    <div class="element-toparea-frame-bottom-border" style="background-color: black; height: 10px; width: 100%;"></div>
+                    <div class="element-toparea-frame-top-border" style="background-color: black; height: 10px; width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+        <div style="width: 1400px">
+            <div class="sliding-backgroundAUS" style="z-index: -1; height: 200px; position: fixed; top: 50px; left: 50px;"></div>
+        </div>
+        
+    </div>
+</body>
+</html>
+
+
+
