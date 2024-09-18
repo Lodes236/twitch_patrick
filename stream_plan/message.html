@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+
+        /* base */
+        body {
+            display: flex;
+            font-family: sans-serif;
+            background-color: lightgray;
+        }
+
+        /* border */
+        .border {
+            width: 700px;
+            height: 900px;
+            border: 15px solid white;
+        }
+
+        .inner-border {
+            border: 5px solid black;
+            width: 98.5%;
+            height: 98.9%;
+        }
+
+        /* plan */
+        .plan {
+            width: 100%;
+            height: 100%;
+            background-image: url("https://lodes.net/src/images/cloud/background_nero_blue.png");
+            background-size: 180%;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .plan-settings {
+            margin-left: 50px;
+        }
+
+        .plan-header, .plan-days {
+            width: 90%;
+            background-color: transparent;
+        }
+
+        .plan-header {
+            height: 15%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 62px;
+        }
+
+        .plan-header img {
+            height: 110%;
+            margin-top: 50px;
+        }
+
+        .plan-days {
+            height: 80%;
+            background-color: transparent;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        /* weekdays */
+        .weekday, .weekend {
+            background-color: white;
+            overflow: hidden;
+            position: relative;
+            border: 4px solid black;
+        }
+
+        .weekday {
+            width: 45%;
+            height: 125px;
+        }
+
+        .weekend {
+            width: 600px;
+            height: 125px;
+        }
+
+        .weekday img, .weekend img {
+            width: 110%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: grab;
+            display: none; /* Initially hidden */
+        }
+
+        .weekday-text {
+            position: absolute;
+            background: #FAE156;
+            padding: 5px 10px;
+            border-right: 4px solid black;
+            border-bottom: 4px solid black;
+            font-size: 23px;
+            font-family: fantasy;
+        }
+
+        /* upload area */
+        .drop-area {
+            width: 150px;
+            height: 70px;
+            border: 2px dashed #ccc;
+            text-align: center;
+            line-height: 70px;
+            margin: 20px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .drop-area.dragover {
+            border-color: green;
+            background-color: #f0f0f0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="plan-wrapper" id="plan">
+        <div class="border">
+            <div class="inner-border">
+                <div class="plan">
+                    <div class="plan-header">
+                        <img src="https://lodes.net/src/images/cloud/stream_plan.png" alt="" crossOrigin="anonymous">
+                    </div>
+                    <div class="plan-days">
+                        <div class="weekday monday">
+                            <img src="" alt="monday-img">
+                            <div class="weekday-text">Montag</div>
+                        </div>
+                        <div class="weekday tuesday">
+                            <img src="" alt="tuesday-img">
+                            <div class="weekday-text">Dienstag</div>
+                        </div>
+                        <div class="weekday wednesday">
+                            <img src="" alt="wednesday-img">
+                            <div class="weekday-text">Mittwoch</div>
+                        </div>
+                        <div class="weekday thursday">
+                            <img src="" alt="thursday-img">
+                            <div class="weekday-text">Donnerstag</div>
+                        </div>
+                        <div class="weekday friday">
+                            <img src="" alt="friday-img">
+                            <div class="weekday-text">Freitag</div>
+                        </div>
+                        <div class="weekday saturday">
+                            <img src="" alt="saturday-img">
+                            <div class="weekday-text">Samstag</div>
+                        </div>
+                        <div class="weekend sunday">
+                            <img src="" alt="sunday-img">
+                            <div class="weekday-text">Sonntag</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="plan-settings">
+        <div>
+            <h2>Default box color</h2>
+    
+            <div>
+                <label for="color-picker">Select Background Color:</label>
+                <input type="color" id="color-picker" value="#ffffff">
+            </div>
+    
+        </div>
+    
+        <div>
+            <h2>Drag & Drop</h2>
+    
+            <div class="insert">
+                <!-- Drop areas for each day -->
+                <div class="drop-area" id="drop-area-monday">Monday</div>
+                <div class="drop-area" id="drop-area-tuesday">Tuesday</div>
+                <div class="drop-area" id="drop-area-wednesday">Wednesday</div>
+                <div class="drop-area" id="drop-area-thursday">Thursday</div>
+                <div class="drop-area" id="drop-area-friday">Friday</div>
+                <div class="drop-area" id="drop-area-saturday">Saturday</div>
+                <div class="drop-area" id="drop-area-sunday">Sunday</div>
+            </div>
+        </div>
+
+        <div>
+            <h2>Save as PNG</h2>
+            <button id="downloadBtn">Download</button>
+        </div>
+    </div>
+
+
+   
+    
+
+    <script>
+        // Common function to prevent default behaviors
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // Common function to handle file drops
+        function handleDrop(e, imgElement) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            const file = files[0];
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+
+            reader.onloadend = function() {
+                imgElement.src = reader.result;
+                imgElement.style.display = 'block'; // Show the image after upload
+            }
+        }
+
+        // Function to make image draggable within its container
+        function enableDragAndDrop(imgElement) {
+            let isDragging = false;
+            let startX, startY, initialLeft, initialTop;
+
+            imgElement.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                initialLeft = imgElement.offsetLeft;
+                initialTop = imgElement.offsetTop;
+                imgElement.style.cursor = 'grabbing';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    const dx = e.clientX - startX;
+                    const dy = e.clientY - startY;
+
+                    imgElement.style.left = initialLeft + dx + 'px';
+                    imgElement.style.top = initialTop + dy + 'px';
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                imgElement.style.cursor = 'grab';
+            });
+        }
+
+        // Set up drag and drop for each weekday and weekend
+        const days = [
+            { day: 'monday', imgSelector: '.monday img', dropArea: 'drop-area-monday' },
+            { day: 'tuesday', imgSelector: '.tuesday img', dropArea: 'drop-area-tuesday' },
+            { day: 'wednesday', imgSelector: '.wednesday img', dropArea: 'drop-area-wednesday' },
+            { day: 'thursday', imgSelector: '.thursday img', dropArea: 'drop-area-thursday' },
+            { day: 'friday', imgSelector: '.friday img', dropArea: 'drop-area-friday' },
+            { day: 'saturday', imgSelector: '.saturday img', dropArea: 'drop-area-saturday' },
+            { day: 'sunday', imgSelector: '.sunday img', dropArea: 'drop-area-sunday' }
+        ];
+
+        days.forEach(({ imgSelector, dropArea }) => {
+            const imgElement = document.querySelector(imgSelector);
+            const dropAreaElement = document.getElementById(dropArea);
+
+            // Prevent default drag events
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropAreaElement.addEventListener(eventName, preventDefaults, false);
+            });
+
+            // Highlight drop area on dragover
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropAreaElement.addEventListener(eventName, () => dropAreaElement.classList.add('dragover'), false);
+            });
+
+            // Remove highlight on dragleave and drop
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropAreaElement.addEventListener(eventName, () => dropAreaElement.classList.remove('dragover'), false);
+            });
+
+            // Handle the drop event
+            dropAreaElement.addEventListener('drop', (e) => handleDrop(e, imgElement), false);
+
+            // Enable image dragging inside the container
+            enableDragAndDrop(imgElement);
+        });
+
+        // Color picker functionality
+        const colorPicker = document.getElementById('color-picker');
+        colorPicker.addEventListener('input', function() {
+            const newColor = colorPicker.value;
+            
+            // Change the background color of all weekday and weekend divs
+            document.querySelectorAll('.weekday, .weekend').forEach((element) => {
+                element.style.backgroundColor = newColor;
+            });
+        });
+
+        // save as PNG function
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+        // Capture the div using html2canvas
+        html2canvas(document.getElementById('plan'), { useCORS: true }).then(function(canvas) {
+            // Convert the canvas to a data URL
+            let imgData = canvas.toDataURL('image/png');
+
+            // Create a temporary link to trigger the download
+            let link = document.createElement('a');
+            link.href = imgData;
+            link.download = 'plan.png';  // Name of the image file
+
+            // Append link to body, click to download, and remove it
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    });
+    </script>
+</body>
+</html>
